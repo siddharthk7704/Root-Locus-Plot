@@ -5,7 +5,7 @@ import control as ctrl
 from scipy.optimize import fsolve
 
 # Define poles and zeros
-poles = [0, -4, -2+4j, -2-4j]  # s = 0, s = -3, s = -1 + j, s = -1 - j
+poles = [0, -4, -2+4j, -2-4j]
 zeros = []  # No zeros in this transfer function
 
 # Create the transfer function
