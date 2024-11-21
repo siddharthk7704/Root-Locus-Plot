@@ -14,8 +14,7 @@ system = ctrl.TransferFunction(numerator_coeffs, denominator_coeffs)
 
 # Generate the root locus plot
 fig, ax = plt.subplots()
-# Generate the root locus plot with plot=True
-r, k = ctrl.rlocus(system, plot=True)
+ctrl.rlocus(system, ax=ax)
 
 # Calculate centroid of the asymptotes
 num_poles = len(poles)
@@ -101,8 +100,8 @@ for pole in poles:
         print(f"Angle of Departure from pole {pole}: {departure_angle}°")
 
         # Plot angle of departure
-        ax.plot([pole.real, pole.real + 2 * np.cos(np.deg2rad(departure_angle))],
-                [pole.imag, pole.imag + 2 * np.sin(np.deg2rad(departure_angle))],
+        ax.plot([pole.real, pole.real + 2 * np.cos(np.deg2rad(departure_angle))], 
+                [pole.imag, pole.imag + 2 * np.sin(np.deg2rad(departure_angle))], 
                 'b-', label=f"Angle of Departure from {pole}")
 
 # Add labels and grid to the plot
@@ -112,11 +111,5 @@ plt.ylabel("Imaginary Axis")
 plt.axhline(0, color='black', linewidth=0.5)
 plt.axvline(0, color='black', linewidth=0.5)
 plt.grid(True)
-
-# Show arrows along the root locus curves (only 2 arrows per curve)
-# Only plot arrows if there are at least 2 points
-for i in range(0, len(r)-1, len(r)//2):  # Take the first and last points
-    ax.quiver(np.real(r[i]), np.imag(r[i]), np.real(r[i+1])-np.real(r[i]), np.imag(r[i+1])-np.imag(r[i]), angles='xy', scale_units='xy', scale=0.1, color='b')
-
 plt.legend()
 plt.show()
