@@ -1,10 +1,11 @@
+
 import matplotlib.pyplot as plt
 import numpy as np
 import control as ctrl
 from scipy.optimize import fsolve
 
 # Define poles and zeros
-poles = [0, -3, -1+1j, -1-1j]  # s = 0, s = -3, s = -1 + j, s = -1 - j
+poles = [0, -4, -2+4j, -2-4j]  # s = 0, s = -3, s = -1 + j, s = -1 - j
 zeros = []  # No zeros in this transfer function
 
 # Create the transfer function
@@ -48,12 +49,10 @@ def characteristic_eq(s):
 
 # Function to compute the derivative of the denominator
 def derivative_characteristic_eq(s):
-    # We compute the derivative of the denominator polynomial (this is a simple numeric derivative)
     return np.polyder(denominator_coeffs)
 
 # Find the breakaway points by solving for roots of the derivative of the characteristic equation
 def find_breakaway_points():
-    # Find the roots of the derivative of the characteristic equation
     derivative_coeffs = derivative_characteristic_eq(0)  # Get the coefficients of the derivative
     breakaway_points = np.roots(derivative_coeffs)  # Find roots of the derivative polynomial
     return breakaway_points
@@ -72,17 +71,16 @@ valid_breakaway_points = []
 
 for bp in breakaway_points:
     bp_rounded = np.round(bp, 3)  # Round breakaway points to 3 decimal places
-    if np.imag(bp_rounded) == 0:  # Real breakaway point
-        K_value = evaluate_K(bp_rounded)
-        if K_value > 0:  # Check if K > 0
-            valid_breakaway_points.append(bp_rounded)
+    K_value = evaluate_K(bp_rounded)  # Calculate gain at the breakaway point
+    if K_value > 0:  # Check if K > 0 for both real and complex points
+        valid_breakaway_points.append(bp_rounded)
 
 # Print valid breakaway points
 print(f"Valid Breakaway Points: {valid_breakaway_points}")
 
 # Mark valid breakaway points on the plot
 for bp in valid_breakaway_points:
-    ax.plot(bp, 0, 'ro', label="Valid Breakaway Point")
+    ax.plot(bp.real, bp.imag, 'ro', label="Valid Breakaway Point")
 
 # Calculate and mark angle of departure (for complex poles)
 def angle_of_departure(pole):
@@ -100,8 +98,8 @@ for pole in poles:
         print(f"Angle of Departure from pole {pole}: {departure_angle}°")
 
         # Plot angle of departure
-        ax.plot([pole.real, pole.real + 2 * np.cos(np.deg2rad(departure_angle))], 
-                [pole.imag, pole.imag + 2 * np.sin(np.deg2rad(departure_angle))], 
+        ax.plot([pole.real, pole.real + 2 * np.cos(np.deg2rad(departure_angle))],
+                [pole.imag, pole.imag + 2 * np.sin(np.deg2rad(departure_angle))],
                 'b-', label=f"Angle of Departure from {pole}")
 
 # Add labels and grid to the plot
